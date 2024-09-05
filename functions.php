@@ -6,7 +6,8 @@ function therenceSupports(): void
 {
     add_theme_support('title-tag');
     add_theme_support('post-thumbnails');
-
+    add_theme_support('author');
+    add_post_type_support('post', 'author'); // Assure que les articles supportent les auteurs
 }
 
 function therenceEnqueueStyles(): void
@@ -17,7 +18,7 @@ function therenceEnqueueStyles(): void
 
 function therenceTitle($title): string
 {
-    if(is_front_page()) {
+    if (is_front_page()) {
         return get_bloginfo('name');
     }
     return get_bloginfo('name') . ' | ' . $title;
