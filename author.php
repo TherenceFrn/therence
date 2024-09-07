@@ -4,35 +4,41 @@
     <?php if (have_posts()) : ?>
         <header class="mb-8">
             <h1 class="text-4xl font-bold text-gray-700">
-                <?php single_cat_title(); ?>
+                <?php the_author(); ?>
             </h1>
         </header>
 
-        <?php $image = get_field('image', 'category_' . get_queried_object_id()); ?>
+        <?php
+            $image = get_field('profile_picture', 'user_' . get_the_author_meta('ID'));
+        ?>
+        <?php
+            $author = get_user_by( 'slug', get_query_var( 'author_name' ) );
+            $avatarUrl = get_avatar_url($author->ID);
+        ?>
 
         <div class="w-full h-96 rounded-lg overflow-hidden mb-8">
-            <?php if(has_post_thumbnail()): ?>
-                <img src="<?= $image ?>" alt="<?php single_cat_title(); ?>" class="w-full h-full object-cover object-center">
+            <?php if ($avatarUrl): ?>
+                <img src="<?= esc_url($avatarUrl); ?>" alt="<?php the_author(); ?>" class="w-full h-full object-cover object-center">
             <?php else: ?>
                 <p class="w-full h-full bg-gray-200"></p>
             <?php endif; ?>
         </div>
 
-        <?php if (category_description()) : ?>
+        <?php if (get_the_author_meta('description')) : ?>
             <div class="mt-4 text-lg text-gray-600 mb-8">
-                <?php echo category_description(); ?>
+                <?php echo get_the_author_meta('description'); ?>
             </div>
         <?php endif; ?>
 
         <h2 class="text-2xl font-bold text-gray-700 mb-4">
-            Articles récents
+            Articles récents de <?php the_author(); ?>
         </h2>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <?php if (have_posts()) : while (have_posts()) : the_post(); ?>
                 <article class="relative group cursor-pointer overflow-hidden rounded-md border-[1px] border-gray-200">
                     <a href="<?php the_permalink(); ?>">
-                        <?php if(has_post_thumbnail()): ?>
+                        <?php if (has_post_thumbnail()): ?>
                             <img src="<?php the_post_thumbnail_url('medium'); ?>" alt="<?php the_title(); ?>" class="w-full h-48 object-cover rounded-t-md group-hover:h-20 transition-all">
                         <?php else: ?>
                             <p class="w-full h-48 bg-gray-200 rounded-t-md group-hover:h-20 transition-all"></p>
@@ -76,18 +82,18 @@
             ?>
         </div>
 
-        <!-- Description longue de la catégorie -->
-        <?php if (function_exists('get_field') && get_field('description_longue', 'category_' . get_queried_object_id())) : ?>
+        <!-- Description longue de l'auteur -->
+        <?php if (function_exists('get_field') && get_field('description_longue', 'user_' . get_the_author_meta('ID'))) : ?>
             <div class="mt-16 p-4">
-                <h2 class="text-2xl font-bold text-gray-700 mb-4">À propos de cette catégorie</h2>
+                <h2 class="text-2xl font-bold text-gray-700 mb-4">À propos de l'auteur</h2>
                 <div class="text-gray-600">
-                    <?php echo get_field('description_longue', 'category_' . get_queried_object_id()); ?>
+                    <?php echo get_field('description_longue', 'user_' . get_the_author_meta('ID')); ?>
                 </div>
             </div>
         <?php endif; ?>
 
     <?php else : ?>
-        <p class="text-gray-600">Aucun article trouvé dans cette catégorie.</p>
+        <p class="text-gray-600">Aucun article trouvé pour cet auteur.</p>
     <?php endif; ?>
 </div>
 
