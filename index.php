@@ -23,9 +23,67 @@
         </div>
     </div>
 
-    <div class="container mx-auto p-4">
+    <div class="container mx-auto p-4 mb-28">
 
-        <h1 class="text-4xl font-bold my-8 text-gray-700">Bienvenue sur mon site</h1>
+        <?php
+        $sections = get_field('sections', 'option');
+        if ($sections) :
+            foreach ($sections as $section) :
+                ?>
+                <h2 class="text-4xl font-bold my-8 text-gray-700"><?= esc_html($section['section_title']); ?></h2>
+
+                <div class="grid grid-cols-3 gap-4">
+                    <?php
+                    if (!empty($section['article'])) :
+                        foreach ($section['article'] as $article_url) :
+                            // Récupérer l'ID de l'article à partir de l'URL
+                            $article_id = url_to_postid($article_url);
+
+                            if ($article_id) :
+                                $post = get_post($article_id); // Récupérer les informations de l'article
+                                setup_postdata($post); // Préparer les données de l'article pour WordPress
+                                ?>
+                                <article class="rounded-md border-[1px] border-gray-200">
+                                    <a href="<?php the_permalink(); ?>">
+                                        <?php if (has_post_thumbnail()): ?>
+                                            <img src="<?php the_post_thumbnail_url('medium'); ?>" alt="<?php the_title(); ?>" class="w-full h-48 object-cover rounded-t-md">
+                                        <?php else: ?>
+                                            <p class="w-full h-48 bg-gray-200 rounded-t-md"></p>
+                                        <?php endif; ?>
+                                    </a>
+                                    <div class="p-4 h-60 relative">
+                                        <!-- Appliquer le style d'ellipse sur les titres -->
+                                        <h2 class="text-2xl font-bold text-gray-700 truncate mb-2"><?php the_title(); ?></h2>
+                                        <div class="flex items-center justify-between w-full mb-4">
+                                            <h3 class="text-md text-gray-500">
+                                                <?php the_category('/ '); ?>
+                                            </h3>
+                                            <time class="text-md block text-gray-500">Publié le <?php echo get_the_date(); ?></time>
+                                        </div>
+
+                                        <!-- Appliquer le style de texte tronqué sur trois lignes avec une hauteur fixe -->
+                                        <div class="text-gray-700 line-clamp-3"><?php the_excerpt(); ?></div>
+
+                                        <div class="absolute bottom-4 right-4 text-right mt-2">
+                                            <a href="<?php the_permalink(); ?>" class="block text-blue-500">Lire la suite ...</a>
+                                        </div>
+                                    </div>
+                                </article>
+                            <?php
+                            endif;
+                        endforeach;
+                        wp_reset_postdata();
+                    else :
+                        ?>
+                        <div class="col-span-3">
+                            <h2 class="text-2xl">Aucun article trouvé</h2>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach;
+        endif; ?>
+
+        <h2 class="text-4xl font-bold my-8 text-gray-700">Bienvenue sur mon site</h2>
 
         <div class="grid grid-cols-3 gap-4">
             <?php if (have_posts()): while (have_posts()): the_post(); ?>
@@ -39,11 +97,11 @@
                     </a>
                     <div class="p-4 h-60 relative">
                         <!-- Appliquer le style d'ellipse sur les titres -->
-                        <h2 class="text-2xl font-bold text-gray-700 truncate mb-2"><?php the_title(); ?></h2>
+                        <h3 class="text-2xl font-bold text-gray-700 truncate mb-2"><?php the_title(); ?></h3>
                         <div class="flex items-center justify-between w-full mb-4">
-                            <h3 class="text-md text-gray-500">
+                            <h4 class="text-md text-gray-500">
                                 <?php the_category('/ '); ?>
-                            </h3>
+                            </h4>
                             <time class="text-md block text-gray-500">Publié le <?php echo get_the_date(); ?></time>
                         </div>
 
