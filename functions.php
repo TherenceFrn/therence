@@ -8,6 +8,7 @@ function therenceSupports(): void
     add_theme_support('post-thumbnails');
     add_theme_support('author');
     add_theme_support('menus');
+    add_theme_support('woocommerce'); // Ajouter le support WooCommerce
     register_nav_menu('header', 'En tête du menu');
     register_nav_menu('footer', 'Pied de page');
     add_post_type_support('post', 'author'); // Assure que les articles supportent les auteurs
@@ -17,6 +18,10 @@ function therenceEnqueueStyles(): void
 {
     wp_register_script('tailwind', 'https://cdn.tailwindcss.com');
     wp_enqueue_script('tailwind');
+
+    // Enregistrer les styles WooCommerce personnalisés
+    wp_register_style('therence-woocommerce', get_template_directory_uri() . '/assets/css/woocommerce.css', array(), '1.0');
+    wp_enqueue_style('therence-woocommerce');
 }
 
 function therenceTitle($title): string
@@ -29,17 +34,21 @@ function therenceTitle($title): string
 
 function therenceAddMenuLinkClass($atts, $item, $args) {
     // Vérifie que le menu est celui de l'en-tête
-    if ($args->theme_location == 'header') {
+    if ($args->theme_location == 'header' || $args->theme_location == 'footer') {
         // Ajoute la classe 'hover:underline' aux attributs de lien
         $atts['class'] = 'hover:underline';
     }
     return $atts;
 }
 
-add_action('after_setup_theme', 'App\therenceSupports', 10);
+if (class_exists('WooCommerce')) {
+    add_action('after_setup_theme', 'App\therenceSupports', 10);
+}
+
 add_action('wp_enqueue_scripts', 'App\therenceEnqueueStyles', 10);
 add_filter('wp_title', 'App\therenceTitle', 10, 1);
 add_filter('nav_menu_link_attributes', 'App\therenceAddMenuLinkClass', 10, 3);
+add_filter('woocommerce_enqueue_styles', '__return_empty_array');
 
 if( function_exists( 'acf_add_options_page' ) ) {
 
