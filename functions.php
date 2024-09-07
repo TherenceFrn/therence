@@ -7,6 +7,9 @@ function therenceSupports(): void
     add_theme_support('title-tag');
     add_theme_support('post-thumbnails');
     add_theme_support('author');
+    add_theme_support('menus');
+    register_nav_menu('header', 'En tête du menu');
+    register_nav_menu('footer', 'Pied de page');
     add_post_type_support('post', 'author'); // Assure que les articles supportent les auteurs
 }
 
@@ -24,9 +27,19 @@ function therenceTitle($title): string
     return get_bloginfo('name') . ' | ' . $title;
 }
 
+function therenceAddMenuLinkClass($atts, $item, $args) {
+    // Vérifie que le menu est celui de l'en-tête
+    if ($args->theme_location == 'header') {
+        // Ajoute la classe 'hover:underline' aux attributs de lien
+        $atts['class'] = 'hover:underline';
+    }
+    return $atts;
+}
+
 add_action('after_setup_theme', 'App\therenceSupports', 10);
 add_action('wp_enqueue_scripts', 'App\therenceEnqueueStyles', 10);
 add_filter('wp_title', 'App\therenceTitle', 10, 1);
+add_filter('nav_menu_link_attributes', 'App\therenceAddMenuLinkClass', 10, 3);
 
 if( function_exists( 'acf_add_options_page' ) ) {
 

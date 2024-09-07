@@ -18,11 +18,9 @@
         </div>
     </div>
 
-
     <h2 class="text-4xl font-bold my-8 text-gray-700">
         Articles récents
     </h2>
-
 
     <div class="grid grid-cols-3 gap-4">
         <?php
