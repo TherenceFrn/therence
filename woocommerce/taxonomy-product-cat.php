@@ -25,16 +25,22 @@ get_header('shop'); // Utilise l'en-tête spécifique à la boutique WooCommerce
                         <p class="w-full h-48 bg-gray-200 rounded-t-md group-hover:h-20 transition-all"></p>
                     <?php endif; ?>
                 </a>
-                <div class="p-4 h-60">
+                <div class="bg-white p-4 h-24 relative group-hover:h-52 transition-all">
                     <h3 class="group-hover:text-gray-900 text-2xl font-bold text-gray-700 truncate mb-2">
                         <?php the_title(); ?>
                     </h3>
                     <div class="flex items-center justify-between w-full mb-4">
-                        <span class="text-lg font-semibold text-blue-500"><?php echo $product->get_price_html(); ?></span>
+                        <span class="text-lg font-semibold text-blue-500">
+                            <?php echo $product->get_price_html(); ?>
+                        </span>
                     </div>
-                    <div class="text-gray-700 line-clamp-3 group-hover:line-clamp-5 transition-all"><?php the_excerpt(); ?></div>
+                    <div class="text-gray-700 line-clamp-3 group-hover:line-clamp-5 transition-all">
+                        <?php the_excerpt(); ?>
+                    </div>
                     <div class="absolute bottom-4 right-4 text-right mt-2">
-                        <a href="<?php the_permalink(); ?>" class="block text-blue-500 hover:underline">Voir le produit</a>
+                        <a href="<?php the_permalink(); ?>" class="block text-blue-500 hover:underline">
+                            Voir le produit
+                        </a>
                     </div>
                 </div>
             </article>
