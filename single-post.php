@@ -1,6 +1,6 @@
 <?php get_header(); ?>
 
-<div class="container mx-auto p-4">
+<div class="container mx-auto p-4 mb-24 relative">
 
     <?php
         global $post; // S'assurer que l'objet $post est disponible
@@ -69,8 +69,32 @@
             </div>
         </div>
 
-        <div class="mt-4 text-gray-700 prose max-w-none">
-            <?php the_content(); ?>
+
+        <!-- Contenu de l'article avec les titres modifiés -->
+        <div class="mt-4 text-gray-700 prose max-w-none relative">
+            <div class="absolute h-full top-20 p-4 right-[100%]">
+                <div class="sticky top-40 -left-24 w-fit h-fit">
+                    <div class="grid items-center justify-center space-y-4">
+                        <a href="https://www.facebook.com/sharer.php?u=<?php echo urlencode(get_permalink()); ?>" class="text-blue-600 hover:text-blue-700">
+                            <i class="fab fa-facebook h-8 w-8"></i>
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?text=<?php echo urlencode(get_the_title() . ' ' . get_permalink()); ?>" class="text-black hover:text-gray-900">
+                            <i class="fab fa-x-twitter h-8 w-8"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/shareArticle?mini=true&url=<?php echo urlencode(get_permalink()); ?>&title=<?php echo urlencode(get_the_title()); ?>" class="text-blue-700 hover:text-blue-800">
+                            <i class="fab fa-linkedin h-8 w-8"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Ajouter le Sommaire Dynamique et le Contenu -->
+            <?php
+            // Extraire le sommaire et le contenu
+            $toc_content = App\generateTableOfContent(get_the_content());
+            echo $toc_content['toc']; // Affiche le sommaire
+            ?>
+
+            <?php echo $toc_content['content']; // Affiche le contenu modifié avec les IDs ?>
         </div>
 
         <div class="mt-8">

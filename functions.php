@@ -32,6 +32,8 @@ function therenceEnqueueStyles(): void
         };
     ');
 
+    wp_enqueue_style('fontawesome', get_template_directory_uri() . '/node_modules/@fortawesome/fontawesome-free/css/all.min.css', [], '5.15.4', 'all');
+
     // Enregistrer les styles WooCommerce personnalisés
     wp_register_style('therence-woocommerce', get_template_directory_uri() . '/assets/css/woocommerce.css', array(), '1.0');
     wp_enqueue_style('therence-woocommerce');
@@ -87,4 +89,36 @@ if( function_exists( 'acf_add_options_page' ) ) {
         'parent_slug'	=> 'theme-general-settings',
     ) );
 
+}
+
+function generateTableOfContent($content) {
+    $toc = ''; // Initialisation du sommaire
+    $toc_items = []; // Stocke les éléments du sommaire
+
+    // Supprimer les commentaires HTML et autres balises de Gutenberg
+    $content = preg_replace('/<!--.*?-->/', '', $content);
+
+    // Recherche des balises <h2> et <h3> dans le contenu nettoyé
+    $pattern = '/<h([2-3])[^>]*>(.*?)<\/h[2-3]>/i';
+
+    if (preg_match_all($pattern, $content, $matches)) {
+        foreach ($matches[0] as $key => $heading) {
+            $level = $matches[1][$key]; // Récupère le niveau du titre (2 ou 3)
+            $title = strip_tags($matches[2][$key]); // Récupère le texte du titre sans balises HTML
+            $id = 'heading-' . $key; // Génère un ID unique pour chaque titre
+
+            // Ajouter l'ID au titre dans le contenu
+            $content = str_replace($heading, '<h' . $level . ' id="' . $id . '">' . $title . '</h' . $level . '>', $content);
+
+            // Ajoute l'élément au sommaire
+            $toc_items[] = '<li class="ml-' . (intval($level) - 2) * 4 . '"><a href="#' . $id . '" class="text-blue-500 hover:underline">' . $title . '</a></li>';
+        }
+
+        // Construit le sommaire final
+        if (!empty($toc_items)) {
+            $toc .= '<div class="mt-8 mb-4 p-4 bg-gray-100 rounded-lg"><h2 class="text-xl font-bold text-gray-700 mt-0 mb-2">Sommaire</h2><ul class="list-none">' . implode('', $toc_items) . '</ul></div>';
+        }
+    }
+
+    return ['toc' => $toc, 'content' => $content];
 }
