@@ -16,13 +16,27 @@ function therenceSupports(): void
 
 function therenceEnqueueStyles(): void
 {
-    wp_register_script('tailwind', 'https://cdn.tailwindcss.com');
-    wp_enqueue_script('tailwind');
+    wp_enqueue_style('tailwind', get_template_directory_uri() . '/assets/css/style.css', [], '1.0', 'all');
+
+    // Configuration personnalisée de Tailwind via un script inline
+    wp_add_inline_script('tailwind', '
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#1D4ED8",
+                        secondary: "#1E40AF",
+                    }
+                }
+            }
+        };
+    ');
 
     // Enregistrer les styles WooCommerce personnalisés
     wp_register_style('therence-woocommerce', get_template_directory_uri() . '/assets/css/woocommerce.css', array(), '1.0');
     wp_enqueue_style('therence-woocommerce');
 }
+
 
 function therenceTitle($title): string
 {

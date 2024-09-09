@@ -69,7 +69,7 @@
             </div>
         </div>
 
-        <div class="mt-4 text-gray-700">
+        <div class="mt-4 text-gray-700 prose max-w-none">
             <?php the_content(); ?>
         </div>
 
@@ -115,7 +115,7 @@
             </div>
         </div>
 
-        <div class="mt-8">
+        <div class="mt-8 mb-24">
             <h2 class="text-2xl font-bold text-gray-700 mb-4">
                 Ces articles pourraient vous intéresser
             </h2>
