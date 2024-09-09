@@ -1,1 +1,23 @@
-/node_modules
+# Node modules and dependencies
+node_modules/
+package-lock.json
+
+# Tailwind compiled CSS output
+/assets/css/style.css
+
+# Ignore compiled JavaScript files (if you're using any build process)
+/assets/js/*.js
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# PHP Dependency manager
+/vendor/
+
+# IDE or editor specific files
+.idea/
+.vscode/
+
+# Logs
+*.log

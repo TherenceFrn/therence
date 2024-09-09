@@ -1,0 +1,52 @@
+name: CI/CD for WordPress Theme
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Vérifier le code du dépôt
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Configurer Node.js pour utiliser npm
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    # Installer les dépendances npm
+    - name: Install dependencies
+      run: npm install
+
+    # Compiler les assets avec npm
+    - name: Build assets
+      run: npm run build:css
+
+    # Déployer les fichiers générés (seulement en production)
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      # Vérifier le code du dépôt
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Déployer les fichiers via FTP ou autre méthode
+      - name: Deploy to FTP server
+        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./ # Répertoire local à déployer
+          server-dir: /path/to/remote/theme-directory # Répertoire distant
