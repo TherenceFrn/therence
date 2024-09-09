@@ -1,0 +1,41 @@
+image: node:16
+
+stages:
+  - install
+  - build
+  - deploy
+
+cache:
+  paths:
+    - node_modules/
+    - assets/css/style.css
+
+before_script:
+  # Installer npm à partir du gestionnaire de paquets
+  - npm install
+
+install_dependencies:
+  stage: install
+  script:
+    - echo "Installation des dépendances npm..."
+    - npm ci  # Utilisez npm ci pour une installation rapide et fiable
+
+build_assets:
+  stage: build
+  script:
+    - echo "Compilation des fichiers CSS avec Tailwind..."
+    - npm run build:css  # Commande de compilation définie dans package.json
+  artifacts:
+    paths:
+      - assets/css/style.css  # Inclure le fichier compilé dans les artefacts
+
+deploy_theme:
+  stage: deploy
+  environment: production
+  only:
+    - main  # Déploiement uniquement à partir de la branche main
+  script:
+    - echo "Déploiement du thème..."
+    # Ajoutez vos scripts de déploiement ici. Exemple : utiliser rsync pour copier le thème vers le serveur distant
+    - rsync -avz --delete --exclude=".git" ./ user@your-server.com:/path/to/wordpress/wp-content/themes/therence
+
