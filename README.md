@@ -18,6 +18,7 @@ This theme is released under the [MIT License](LICENSE).
 ## Credits
 
 - [Tailwind](https://tailwind.com/)
+- [FontAwesome](https://fontawesome.com/)
 
 ## Contributing
 
