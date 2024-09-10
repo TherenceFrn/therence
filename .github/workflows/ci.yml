@@ -7,10 +7,47 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch: # Ajout du déclencheur manuel
 
 jobs:
+  validate-code:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Vérifier le code du dépôt
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Installer PHP et Composer
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+        tools: composer
+
+    # Installer les dépendances PHP
+    - name: Install Composer dependencies
+      run: composer install --prefer-dist --no-progress --no-suggest
+
+    # Vérifier la qualité du code avec PHP_CodeSniffer
+    - name: Run PHP_CodeSniffer
+      run: ./vendor/bin/phpcs --standard=WordPress ./
+
+    # Vérifier le code avec PHPStan
+    - name: Run PHPStan
+      run: ./vendor/bin/phpstan analyse
+
+    # Vérifier le code avec Psalm
+    - name: Run Psalm
+      run: ./vendor/bin/psalm
+
+    # Vérifier le code avec PHP Mess Detector
+    - name: Run PHPMD
+      run: ./vendor/bin/phpmd ./ text cleancode,codesize,controversial,design,naming,unusedcode
+
   build:
     runs-on: ubuntu-latest
+    needs: validate-code
 
     steps:
     # Vérifier le code du dépôt
@@ -31,10 +68,10 @@ jobs:
     - name: Build assets
       run: npm run build:css
 
-    # Déployer les fichiers générés (seulement en production)
   deploy:
-    if: github.ref == 'refs/heads/main'
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    needs: build
 
     steps:
       # Vérifier le code du dépôt
