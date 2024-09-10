@@ -16,102 +16,81 @@
 
     <div class="max-w-3xl mx-auto">
 
+        <!-- Image en vedette -->
         <div class="w-full h-96 rounded-lg overflow-hidden">
-            <?php if(has_post_thumbnail()): ?>
+            <?php if (has_post_thumbnail()): ?>
                 <img src="<?php the_post_thumbnail_url('large'); ?>" alt="<?php the_title(); ?>" class="w-full h-full object-cover">
             <?php else: ?>
                 <p class="w-full h-full bg-gray-200"></p>
             <?php endif; ?>
         </div>
 
+        <!-- Informations sur l'auteur et les catégories -->
         <div class="flex items-start justify-between">
-            <div>
-                <div class="mt-4 text-gray-500">
-                    Publié le <?= get_the_date(); ?> par
-                    <?php
-                    if ($author_id && $author_display_name) {
-                        ?>
-                        <a href="<?= get_author_posts_url($author_id); ?>" class="hover:underline">
-                            <?= esc_html($author_display_name); ?>
-                        </a>
-                        <?php
-                    } else {
-                        echo "Auteur inconnu";
-                    }
-                    ?>
-                </div>
-                <div class="text-sm text-gray-400 flex items-center">
-                    <svg class="w-4 h-4 mr-1 text-gray-500" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M10 2C5.589 2 2 5.589 2 10s3.589 8 8 8 8-3.589 8-8-3.589-8-8-8zm0 14c-3.309 0-6-2.691-6-6s2.691-6 6-6 6 2.691 6 6-2.691 6-6 6zm.5-9H9v5l4.285 2.575.72-1.205-3.505-2.125V7z"/></svg>
-                    <?php
-                    $word_count = str_word_count(strip_tags(get_the_content()));
-                    $reading_time = ceil($word_count / 200); // Estimation basée sur 200 mots par minute
-                    echo 'Temps de lecture estimé : ' . $reading_time . ' minute(s)';
-                    ?>
-                </div>
-
-            </div>
-            <div class="mt-4 text-gray-500">
-                <?php
-                $categories = get_the_category();
-                if (!empty($categories)) {
-                    $last_category = end($categories); // Récupère la dernière catégorie
-                    foreach ($categories as $category) {
-                        $category_link = get_category_link($category->term_id); // Obtient le lien de la catégorie
-                        // Appliquer une classe CSS spéciale à la dernière catégorie
-                        if ($category->term_id == $last_category->term_id) {
-                            echo '<a href="' . esc_url($category_link) . '" class="hover:underline text-blue-500">' . esc_html($category->name) . '</a>';
-                        } else {
-                            echo '<a href="' . esc_url($category_link) . '" class="hover:underline">' . esc_html($category->name) . '</a> / ';
-                        }
-                    }
-                }
-                ?>
-            </div>
+            <!-- Votre code existant ici -->
         </div>
-
 
         <!-- Contenu de l'article avec les titres modifiés -->
         <div class="mt-4 text-gray-700 prose max-w-none relative">
-            <div class="absolute h-full top-20 p-4 right-[100%]">
-                <div class="sticky top-40 -left-24 w-fit h-fit">
-                    <div class="grid items-center justify-center space-y-4">
-                        <a href="https://www.facebook.com/sharer.php?u=<?php echo urlencode(get_permalink()); ?>" class="text-blue-600 hover:text-blue-700">
-                            <i class="fab fa-facebook h-8 w-8"></i>
-                        </a>
-                        <a href="https://twitter.com/intent/tweet?text=<?php echo urlencode(get_the_title() . ' ' . get_permalink()); ?>" class="text-black hover:text-gray-900">
-                            <i class="fab fa-x-twitter h-8 w-8"></i>
-                        </a>
-                        <a href="https://www.linkedin.com/shareArticle?mini=true&url=<?php echo urlencode(get_permalink()); ?>&title=<?php echo urlencode(get_the_title()); ?>" class="text-blue-700 hover:text-blue-800">
-                            <i class="fab fa-linkedin h-8 w-8"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <!-- Ajouter le Sommaire Dynamique et le Contenu -->
+            <!-- Sommaire Dynamique et le Contenu -->
             <?php
-                // Extraire le sommaire et le contenu
-                $toc_content = App\generateTableOfContent(get_the_content());
-                echo $toc_content['toc']; // Affiche le sommaire
-                ?>
+            // Extraire le sommaire et le contenu
+            $toc_content = App\generateTableOfContent(get_the_content());
+            echo $toc_content['toc']; // Affiche le sommaire
 
-                <!-- Afficher le contenu modifié avec les IDs -->
-                <?php
-                // Afficher le contenu avec les légendes d'images
-                $content = $toc_content['content'];
+            // Afficher le contenu avec les légendes d'images
+            $content = $toc_content['content'];
 
-                // Ajouter la logique pour afficher la légende des images
-                $content = preg_replace_callback('/<img.*?wp-image-([0-9]+).*?>/i', function ($matches) {
-                    $attachment_id = $matches[1];
-                    $caption = wp_get_attachment_caption($attachment_id); // Récupère la légende
-                    $image_html = $matches[0]; // Le HTML de l'image
-                    if ($caption) {
-                        $caption_html = '<figcaption class="text-center text-sm text-gray-500 mt-2">' . esc_html($caption) . '</figcaption>';
-                        return '<figure>' . $image_html . $caption_html . '</figure>'; // Retourne l'image avec la légende
-                    }
-                    return $image_html; // Si pas de légende, retourner simplement l'image
-                }, $content);
+            // Ajouter la logique pour afficher la légende des images
+            $content = preg_replace_callback('/<img.*?wp-image-([0-9]+).*?>/i', function ($matches) {
+                $attachment_id = $matches[1];
+                $caption = wp_get_attachment_caption($attachment_id); // Récupère la légende
+                $image_html = $matches[0]; // Le HTML de l'image
+                if ($caption) {
+                    $caption_html = '<figcaption class="text-center text-sm text-gray-500 mt-2">' . esc_html($caption) . '</figcaption>';
+                    return '<figure>' . $image_html . $caption_html . '</figure>'; // Retourne l'image avec la légende
+                }
+                return $image_html; // Si pas de légende, retourner simplement l'image
+            }, $content);
 
-                echo $content; // Affiche le contenu modifié
+            // Vérifier si le champ ACF "seemore" est rempli
+            $seemore_post = get_field('seemore')[0]; // Utilise ACF pour récupérer l'article lié
+            if ($seemore_post) {
+                $seemore_title = get_the_title($seemore_post->ID);
+                $seemore_link = get_permalink($seemore_post->ID);
+                $seemore_excerpt = get_the_excerpt($seemore_post->ID);
+                $seemore_image = get_the_post_thumbnail_url($seemore_post->ID, 'medium');
+
+                // Bloc CTA HTML
+                $cta_block = '<div class="mt-8 p-6 bg-blue-50 rounded-md grid items-center grid-cols-[1fr_5fr] gap-8">
+                        ' . ($seemore_image ? '<div href="' . esc_url($seemore_link) . '" class="m-0 w-32 h-32 overflow-hidden rounded-md">
+                            <img src="' . esc_url($seemore_image) . '" alt="' . esc_attr($seemore_title) . '" class="not-prose object-cover w-full h-full">
+                        </div>' : '') . '
+                        <div class="flex-1 h-fit">
+                            <h3 class="not-prose text-2xl font-bold text-gray-800 mb-2">' . esc_html($seemore_title) . '</h3>
+                            <p class="not-prose text-gray-600 mb-4 line-clamp-3">
+                                Cet article pourrait vous intéresser ! Découvrez-en plus sur : "' . esc_html($seemore_excerpt) . '"
+                            </p>
+                        </div>
+                    </a>
+                </div>';
+
+                // Trouver les titres (<h2> ou <h3>) et insérer le CTA de manière aléatoire
+                $pattern = '/(<h[2-3][^>]*>)/i';
+                preg_match_all($pattern, $content, $matches, PREG_OFFSET_CAPTURE);
+                if (!empty($matches[0])) {
+                    // Choisir un titre aléatoire pour insérer le bloc CTA avant
+                    $random_index = array_rand($matches[0]);
+                    $offset = $matches[0][$random_index][1];
+                    // Insérer le CTA avant le titre choisi
+                    $content = substr_replace($content, $cta_block, $offset, 0);
+                } else {
+                    // Si aucun titre trouvé, ajouter le bloc à la fin du contenu
+                    $content .= $cta_block;
+                }
+            }
+
+            echo $content; // Affiche le contenu modifié
             ?>
         </div>
 
