@@ -89,12 +89,30 @@
             </div>
             <!-- Ajouter le Sommaire Dynamique et le Contenu -->
             <?php
-            // Extraire le sommaire et le contenu
-            $toc_content = App\generateTableOfContent(get_the_content());
-            echo $toc_content['toc']; // Affiche le sommaire
-            ?>
+                // Extraire le sommaire et le contenu
+                $toc_content = App\generateTableOfContent(get_the_content());
+                echo $toc_content['toc']; // Affiche le sommaire
+                ?>
 
-            <?php echo $toc_content['content']; // Affiche le contenu modifié avec les IDs ?>
+                <!-- Afficher le contenu modifié avec les IDs -->
+                <?php
+                // Afficher le contenu avec les légendes d'images
+                $content = $toc_content['content'];
+
+                // Ajouter la logique pour afficher la légende des images
+                $content = preg_replace_callback('/<img.*?wp-image-([0-9]+).*?>/i', function ($matches) {
+                    $attachment_id = $matches[1];
+                    $caption = wp_get_attachment_caption($attachment_id); // Récupère la légende
+                    $image_html = $matches[0]; // Le HTML de l'image
+                    if ($caption) {
+                        $caption_html = '<figcaption class="text-center text-sm text-gray-500 mt-2">' . esc_html($caption) . '</figcaption>';
+                        return '<figure>' . $image_html . $caption_html . '</figure>'; // Retourne l'image avec la légende
+                    }
+                    return $image_html; // Si pas de légende, retourner simplement l'image
+                }, $content);
+
+                echo $content; // Affiche le contenu modifié
+            ?>
         </div>
 
         <div class="mt-8">
