@@ -29,3 +29,11 @@ If you would like to contribute to the theme, please open an issue or a pull req
 If you need help with the theme, please open an issue on the [GitHub repository](https://github.com/TherenceFrn/therence).
 
 ## Changelog
+
+https://seestem.agency/
+
+https://www.apple.com/fr/shop/product/MW5G3Z/A/siri-remote
+
+https://tailwindcss.com/docs/columns
+
+https://seela.io/cybertraining/cours-metasploit-apprenez-toutes-les-techniques-avancee/
